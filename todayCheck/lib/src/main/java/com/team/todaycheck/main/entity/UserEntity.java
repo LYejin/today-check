@@ -20,6 +20,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,13 +53,16 @@ public class UserEntity implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	private Admin admin;
 	
+	@JsonIgnore
 	@Builder.Default
 	@OneToMany(fetch = FetchType.LAZY , cascade = CascadeType.ALL , mappedBy = "userEntity" , orphanRemoval = true)
 	private List<Post> post = new ArrayList<Post>();
 	
+	@JsonIgnore
 	@Builder.Default
 	@OneToMany(fetch = FetchType.LAZY , cascade = CascadeType.ALL , mappedBy = "admin" , orphanRemoval = true)
 	private List<Mission> mission = new ArrayList<Mission>();
+	
 	
 	// 연관관계 편의 메소드
 	public void addpost(Post postData) {

@@ -92,7 +92,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         	.antMatchers("/admin/**").authenticated() // 인증을 실시
             .antMatchers("/admin/**").hasRole("ADMIN") // 괄호의 권한을 가진 유저만 접근가능, ROLE_가 붙어서 적용 됨. 즉, 테이블에 ROLE_권한명 으로 저장해야 함.
             .antMatchers("/user/**").authenticated() // 인증을 실시
-            .antMatchers("/user/**").hasRole("USER") 
+            .antMatchers("/user/**").hasRole("USER")
+            .antMatchers("/post/post").hasRole("USER")
+            .antMatchers("/post/post/**").hasRole("USER")
+            .antMatchers("/post/comment/**").authenticated()
+            .antMatchers("/post/comment/**").hasRole("USER")
             .antMatchers("/**").permitAll() // 이외 요청은 누구나 가능
             .anyRequest().authenticated()  //  로그인된 사용자가 요청을 수행할 떄 필요하다  만약 사용자가 인증되지 않았다면, 스프링 시큐리티 필터는 요청을 잡아내고 사용자를 로그인 페이지로 리다이렉션 해준다.
             .and()
@@ -103,7 +107,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
              // .logoutSuccessUrl("/")
              .and()
              .oauth2Login()
-				.loginPage("/expireAccess")
+				.loginPage("/refresh") // 인가되지 않은 접근 시
 				.clientRegistrationRepository(clientRegistrationRepository())
 				.authorizedClientService(authorizedClientService())
 				.and()

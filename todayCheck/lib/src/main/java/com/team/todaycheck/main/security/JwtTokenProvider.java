@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.team.todaycheck.main.entity.RefreshToken;
 import com.team.todaycheck.main.entity.Token;
-import com.team.todaycheck.main.exception.NotAuthorizationException;
+import com.team.todaycheck.main.exception.FalsifyTokenException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -34,8 +34,8 @@ public class JwtTokenProvider {
 	
 	// Access 토큰 유효시간 30분;
     private long tokenValidTime = 30 * 60 * 1000L;
-    // Refresh 토큰 유효시간 14주
-    private long refreshTokenValidTime = 14 * 24 * 60 * 60 * 1000L;
+    // Refresh 토큰 유효시간 14주 14 * 24 * 60 * 60 *
+    private long refreshTokenValidTime =  14 * 24 * 60 * 60 * 1000L;
     
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
@@ -109,7 +109,7 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = loginService.loadUserByUsername(this.getUserPk(token));
         if(userDetails == null) {
-        	throw new NotAuthorizationException("알 수 없는 토큰이거나 , 변조되었습니다.");
+        	throw new FalsifyTokenException("알 수 없는 토큰이거나 , 변조되었습니다.");
         }
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }

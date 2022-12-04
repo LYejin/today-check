@@ -5,10 +5,19 @@
  * For more details take a look at the 'Building Java & JVM projects' chapter in the Gradle
  * User Manual available at https://docs.gradle.org/7.5/userguide/building_java_projects.html
  */
+buildscript {
+	dependencies {
+      classpath("gradle.plugin.com.ewerk.gradle.plugins:querydsl-plugin:1.0.10")
+   }
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
 
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 repositories {
@@ -37,15 +46,41 @@ implementation 'io.jsonwebtoken:jjwt:0.9.1'
     api 'org.apache.commons:commons-math3:3.6.1'
     implementation 'com.google.guava:guava:31.0.1-jre'
 	implementation 'com.h2database:h2:2.1.212'
-	// implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.30'
+	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.30'
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: '2.7.4'
 	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.7.4'
 	testImplementation group: 'org.springframework.batch', name: 'spring-batch-test', version: '4.3.7'
 	testImplementation group: 'org.springframework.security', name: 'spring-security-test', version: '5.7.3'
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+    compile("com.querydsl:querydsl-core:4.2.1")
+    compile("com.querydsl:querydsl-apt:4.2.1")
+    compile("com.querydsl:querydsl-jpa:4.2.1")
+    compile("com.querydsl:querydsl-collections:4.2.1")
 }
 
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+def querydslDir = "src/main/generated/queryDsl"
+
+querydsl {
+	library = "com.querydsl:querydsl-apt"
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+	main.java.srcDirs = ['src/main/java', querydslDir]
+}
+
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
+}
+
+configurations {
+	querydsl.extendsFrom compileClasspath
 }

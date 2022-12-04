@@ -15,36 +15,28 @@ const missionData = {
 
 const userData = [
   {
-    userPicture: 'https://via.placeholder.com/350x200',
+    id: 1,
+    avater: 'https://via.placeholder.com/350x200',
     userName: '이예진',
+    image: 'https://via.placeholder.com/350x200',
   },
   {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '김예진',
-  },
-  {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '박예진',
-  },
-  {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '손예진',
-  },
-  {
-    userPicture: 'https://via.placeholder.com/350x200',
+    id: 1,
+    avater: 'https://via.placeholder.com/350x200',
     userName: '이예진',
+    image: 'https://via.placeholder.com/350x200',
   },
   {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '김예진',
+    id: 1,
+    avater: 'https://via.placeholder.com/350x200',
+    userName: '이예진',
+    image: 'https://via.placeholder.com/350x200',
   },
   {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '박예진',
-  },
-  {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '손예진',
+    id: 1,
+    avater: 'https://via.placeholder.com/350x200',
+    userName: '이예진',
+    image: 'https://via.placeholder.com/350x200',
   },
 ];
 
@@ -53,10 +45,12 @@ const MissionDetail = () => {
   const [join, setJoin] = useState(false);
   const params = useParams();
   const paramsData = params.id;
+  const startDate = String(missionDetail.startDate).slice(0, 10);
+  const endDate = String(missionDetail.endDate).slice(0, 10);
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/mission/${paramsData}`, { id: paramsData })
+      .get(`/mission/${paramsData}`, { id: paramsData })
       .then(response => {
         console.log(response);
         setMissionDetail(response.data);
@@ -68,16 +62,19 @@ const MissionDetail = () => {
 
   console.log(missionDetail);
   console.log(userData.map(user => user.userName));
+
   return (
     <MissionWrapper>
       <MissionHeader>
         <MissionImage>
-          <img src={missionData.postPicture} />
+          <img src={missionDetail.postPicture} />
         </MissionImage>
         <MissionInfBox>
-          <MissionTitle>{missionData.postTitle}</MissionTitle>
-          <MissionContent>{missionData.postContent}</MissionContent>
-          <MissionDate>기간: 2022.11.25 ~ 2022.12.30</MissionDate>
+          <MissionTitle>{missionDetail.postTitle}</MissionTitle>
+          <MissionContent>{missionDetail.postContent}</MissionContent>
+          <MissionDate>
+            기간: {startDate} ~ {endDate}
+          </MissionDate>
           {join ? (
             <CompletionButton onClick={() => setJoin(!join)}>
               참여완료🌈
@@ -89,16 +86,16 @@ const MissionDetail = () => {
       </MissionHeader>
 
       <ParticipantWrapper>
-        {userData.map((props, index) => (
-          <ParticipantBox key={index}>
+        {missionDetail.participants?.map(props => (
+          <ParticipantBox key={props.id}>
             <ParticipantInfo>
               <ParticipantImage>
-                <img src={props.userPicture} />
+                <img src={props.avater} />
               </ParticipantImage>
-              <ParticipantName>{props.userName}</ParticipantName>
+              <ParticipantName>{props.name}</ParticipantName>
             </ParticipantInfo>
             <Picture>
-              <img src={props.userPicture} />
+              <img src={props.image} />
             </Picture>
           </ParticipantBox>
         ))}

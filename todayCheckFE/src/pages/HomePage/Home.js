@@ -80,12 +80,17 @@ const homeData = [
 
 const Home = () => {
   const [missions, setMissions] = useState([]);
+  const iconv = require('iconv-lite');
 
   useEffect(() => {
-    axios
-      .get('/mission')
+    axios({
+      url: '/mission',
+      method: 'get',
+      // responseType: 'arraybuffer',
+    })
       .then(response => {
-        console.log(response);
+        // const decoded = iconv.decode(response, 'EUC-KR');
+        // console.log(decoded);
         setMissions(response.data);
       })
       .catch(function (error) {
@@ -96,7 +101,7 @@ const Home = () => {
   return (
     <RightContainer>
       <HomeBoxContainer>
-        {homeData.map(data => (
+        {missions.map(data => (
           <HomeBox
             key={data.id}
             id={data.id}

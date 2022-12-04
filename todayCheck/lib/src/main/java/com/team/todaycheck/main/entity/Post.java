@@ -1,7 +1,10 @@
 package com.team.todaycheck.main.entity;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -51,8 +55,36 @@ public class Post {
 	@Column(nullable = false , length=100)
 	private String thumbnail;
 	
+	@Builder.Default
+	@Column(nullable = false)
+	private int views = 0;
+	
+	@Builder.Default
+	@Column(nullable = false)
+	private int recommendation = 0;
+	
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userId_id", nullable = false)
 	private UserEntity userEntity;
+	
+	@JsonIgnore
+	@Builder.Default
+	@OneToMany(mappedBy = "post" , cascade = CascadeType.PERSIST , fetch = FetchType.LAZY , orphanRemoval = true)
+	private List<Recommander> recommander = new LinkedList<Recommander>();
+	
+	@Builder.Default
+	@OneToMany(mappedBy = "post" , cascade = CascadeType.PERSIST , fetch = FetchType.LAZY , orphanRemoval = true)
+	private List<Comment> comment = new LinkedList<Comment>();
+	
+	// 연관관계 편의 메소드
+	public void addRecommander(Recommander rc) {
+		recommander.add(rc);
+		rc.setPost(this);
+	}
+	
+	public void addComment(Comment comment) {
+		this.comment.add(comment);
+		comment.setPost(this);
+	}
 }

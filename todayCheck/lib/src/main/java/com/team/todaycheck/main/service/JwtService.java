@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.team.todaycheck.main.entity.RefreshToken;
 import com.team.todaycheck.main.entity.Token;
+import com.team.todaycheck.main.exception.FalsifyTokenException;
 import com.team.todaycheck.main.repository.RefreshTokenRepository;
 import com.team.todaycheck.main.security.JwtTokenProvider;
 
@@ -48,7 +49,7 @@ public class JwtService {
 			
 			return createRefreshJson(createdAccessToken);
 		} catch (NoSuchElementException e) {
-			throw new NoSuchElementException("변조되거나, 알 수 없는 RefreshToken 입니다.");
+			throw new FalsifyTokenException("변조되거나, 알 수 없는 RefreshToken 입니다.");
 		}
 	}
 
